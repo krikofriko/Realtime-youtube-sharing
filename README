@@ -1,0 +1,13 @@
+Youtube realtime sharing is a system which let's you
+view youtube videos on all connected participants.
+
+Requires:
+ - PHP 5 server
+ - JS support on client side
+ 
+INSTALL
+1. Setup database - look in INIT.sql
+2. Set database parameters - db.php
+
+USAGE:
+ - paste a Youtube video into the address, video will pop on every connected client
