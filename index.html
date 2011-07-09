@@ -37,7 +37,12 @@
           {
             jQuery('#yt_floater').effect('highlight', {color: '#FFFF99'}, 1000);
             
-            if (vid_id != data.db.id)
+            if (vid_id == -1)
+            {
+              // user joined, do not disturb yet
+              vid_id = data.db.id;
+            }
+            else if (vid_id != data.db.id)
             {
               // new video
               vid_id = data.db.id;
@@ -61,6 +66,8 @@
     {
       jQuery("#yt_enabled").click(function()
       {
+        jQuery('#yt_input').val('');
+        
         if (jQuery("#yt_enabled").is(":checked"))
         {
           jQuery('.yt_span').css('color', 'black');
