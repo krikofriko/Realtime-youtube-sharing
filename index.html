@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style>
+    #yt_floater{
+      border: #000 1px dotted;
+      display: inline;
+      padding: 5px;
+    }
+    
+    form{
+      display: inline;
+    }
+    </style>
+    <script type="text/javascript" src="jquery/jquery-1.5.1.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.effects.highlight.js"></script>
+    <script type="text/javascript">
+    var interval = null;
+    var vid_id = -1;
+    
+    jQuery.noConflict();
+    
+    function get_vid()
+    {
+      // console.log("fired get_vid event");
+      
+      jQuery.ajax(
+      {
+        type: 'GET',
+        url: 'yt_get.php',
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR)
+        {
+          if (!data.error)
+          {
+            jQuery('#yt_floater').effect('highlight', {color: '#FFFF99'}, 1000);
+            
+            if (vid_id != data.db.id)
+            {
+              // new video
+              vid_id = data.db.id;
+              jQuery('#yt_content').html(data.db.embed);
+            }
+          } else
+          {
+            jQuery('#yt_floater').effect('highlight', {color: '#E8B7D7'}, 1000);
+          }
+          // console.log(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+          jQuery('#yt_floater').effect('highlight', {color: '#E8B7D7'}, 1000);
+          // console.log(textStatus + ': ' + jqXHR['status'] + ' ' +errorThrown);
+        }
+      });
+    }
+      
+    jQuery(window).ready(function()
+    {
+      jQuery("#yt_enabled").click(function()
+      {
+        if (jQuery("#yt_enabled").is(":checked"))
+        {
+          jQuery('.yt_span').css('color', 'black');
+          jQuery('#yt_input').attr('disabled', false);
+          jQuery('#yt_submit').removeAttr('disabled');
+          
+          interval = window.setInterval('get_vid()', 5000);
+        } else
+        {
+          jQuery('.yt_span').css('color', 'grey');
+          jQuery('#yt_input').attr('disabled', true);
+          jQuery('#yt_submit').attr('disabled', 'disabled');
+
+          clearInterval(interval);
+        }
+      });
+      
+      jQuery("#yt_submit").click(function()
+      {
+        var data = { url: jQuery('#yt_input').val() };
+        
+        jQuery.ajax(
+        {
+          type: 'POST',
+          url: 'yt_post.php',
+          data: data,
+          dataType: 'json',
+          success: function(data, textStatus, jqXHR)
+          {
+            if (!data.error)
+            {
+              jQuery('#yt_floater').effect('highlight', {color: '#BFFFBF'}, 1000);
+//               jQuery('#yt_content').html(data.html);
+            } else
+            {
+              jQuery('#yt_floater').effect('highlight', {color: '#FFBFBF'}, 1000);
+            }
+            // console.log(data);
+          },
+          error: function(jqXHR, textStatus, errorThrown)
+          {
+            jQuery('#yt_floater').effect('highlight', {color: '#FFBFBF'}, 1000);
+            // console.log(textStatus + ': ' + jqXHR['status'] + ' ' +errorThrown);
+          }
+        });
+        
+        return false;
+      });
+      
+      interval = window.setInterval('get_vid()', 5000);
+    });
+    </script>
+  </head>
+  <body>
+    <div id="yt_floater">
+      <form id="yt_form" method="post" action="yt_app.php">
+        <input type="checkbox" id="yt_enabled" name="yt_enabled" checked>
+        </input>
+        <span class="yt_span">
+        YouTube URL:
+        </span>
+        <input type="text" id="yt_input" name="yt_input">
+        </input>
+        <input type="submit" id="yt_submit" value="Watch together">
+        </input>
+      </form>
+    </div>
+    <div id="yt_content">
+    </div>
+  </body>
+</html>
