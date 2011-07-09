@@ -10,4 +10,4 @@ INSTALL
 2. Set database parameters - db.php
 
 USAGE:
- - paste a Youtube video into the address, video will pop on every connected client
+ - paste a Youtube video into the address field, video will pop on every connected client
