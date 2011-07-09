@@ -88,6 +88,7 @@
       jQuery("#yt_submit").click(function()
       {
         var data = { url: jQuery('#yt_input').val() };
+        jQuery('#yt_input').val('');
         
         jQuery.ajax(
         {
