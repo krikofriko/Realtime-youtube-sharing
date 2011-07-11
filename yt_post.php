@@ -18,6 +18,7 @@
     if (!isset($args))
     {
       $return["error"] = true;
+      echo json_encode( $return );
     } else
     {
       $db = new DB();
@@ -36,18 +37,19 @@
         CURRENT_TIMESTAMP 
       );";
       
-//       $return["query"] = $query;
-      
       $db->query($query);
       $db->close();
+      
+      $return["error"] = false;
+      echo json_encode( $return );
     }
   } else
   {
     // not YT url
     $return["error"] = true;
+    echo json_encode( $return );
   }
   
 //   $return["data"] = $args;
-  echo json_encode( $return );
   
 ?>

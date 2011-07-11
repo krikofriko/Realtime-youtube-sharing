@@ -3,7 +3,8 @@ class YoutubeLib
 {
   public $config = array(
     'autoplay' => 1, // autoplay
-    'rel' => 0  // related
+    'rel' => 0,  // related
+    'fs' => 1 // fulscreen
   );
   
   public function url_isYt($url="")
@@ -29,22 +30,43 @@ class YoutubeLib
       
       foreach ($args as $key => $val)
       {
-        $params = $params."&".$key."=".$val;
+        ## Parse time TODO
+        if ($key == "t")
+        {
+          $pattern = "@((?P<num>[0-9]+)(?P<unit>[a-z]{1}))@";
+          preg_match_all($pattern, $val, $matches, PREG_SET_ORDER);
+         
+          $secs = 0;
+//           [][3] - h/m/s, [][2] - number
+          foreach ($matches as $slice)
+          {
+          //   print_r($slice);
+            switch ($slice['unit'])
+            {
+                case 'h':
+                    $secs += $slice['num']*60*60;
+                    break;
+                case 'm':
+                    $secs += $slice['num']*60;
+                    break;
+                case 's':
+                    $secs += $slice['num'];
+                    break;
+            }
+            
+          }
+          
+          $params = $params."&"."start"."=".$secs;
+        }
+        else
+        {
+          $params = $params."&".$key."=".$val;
+        }
       }
       
       foreach ($this->config as $key => $val)
       {
-        ## Parse time TODO
-//         preg_match_all("/(([0-1]\d|2[0-3])m[0-5]\d)/",$y,$matches);
-//         
-//         if ($key = "t")
-//         {
-//           $params = $params."&"."start"."=".$val;
-//         } 
-//         else
-        {
-          $params = $params."&".$key."=".$val;
-        }
+        $params = $params."&".$key."=".$val;
       }
 // http://www.youtube.com/watch?v=mTTwcCVajAc&t=1m0s
       return "<object 
@@ -62,13 +84,5 @@ class YoutubeLib
     
     return false;
   }
-//         <param 
-//           name=\"movie\"
-//           value=\"http://www.youtube.com/v/EBM854BTGL0&autoplay=1\">
-//         </param>
-//         <param
-//           name=\"wmode\" 
-//           value=\"transparent\">
-//         </param>
 }
 ?>
