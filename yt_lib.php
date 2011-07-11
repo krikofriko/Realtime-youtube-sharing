@@ -17,7 +17,7 @@ class YoutubeLib
     return false;
   }
   
-  public function getEmbedCode($args=array())
+  private function embed($args=array())
   {
     $base = "http://www.youtube.com/";
     
@@ -35,9 +35,9 @@ class YoutubeLib
         {
           $pattern = "@((?P<num>[0-9]+)(?P<unit>[a-z]{1}))@";
           preg_match_all($pattern, $val, $matches, PREG_SET_ORDER);
-         
+          
           $secs = 0;
-//           [][3] - h/m/s, [][2] - number
+  //           [][3] - h/m/s, [][2] - number
           foreach ($matches as $slice)
           {
           //   print_r($slice);
@@ -68,12 +68,24 @@ class YoutubeLib
       {
         $params = $params."&".$key."=".$val;
       }
-// http://www.youtube.com/watch?v=mTTwcCVajAc&t=1m0s
+      
+      return $base.$params;
+    }
+    
+    return false;
+  }
+  
+  public function getEmbedCode($args=array())
+  {
+    $embed = $this->embed($args);
+    
+    if ($embed != false)
+    {
       return "<object 
       width=\"640\" 
       height=\"480\">
         <embed
-          src=\"".$base.$params."\"
+          src=\"".$embed."\"
           type=\"application/x-shockwave-flash\"
           wmode=\"transparent\"
           width=\"640\" 
@@ -81,8 +93,22 @@ class YoutubeLib
         </embed>
       </object>";
     }
+  }
+  
+  public function getjQueryEmbedCode($args=array(), $append)
+  {
+    $embed = $this->embed($args);
     
-    return false;
+    if ($embed != false)
+    {
+      return "jQuery('".$append."').html('');
+            jQuery('<embed/>', {
+            'width': '640',
+            'height': '480',
+            'src': '".$embed."',
+            'type': 'application/x-shockwave-flash'
+          }).appendTo('".$append."');";
+    }
   }
 }
 ?>
