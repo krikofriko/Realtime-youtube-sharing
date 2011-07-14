@@ -4,7 +4,8 @@ class YoutubeLib
   public $config = array(
     'autoplay' => 1, // autoplay
     'rel' => 0,  // related
-    'fs' => 1 // fulscreen
+    'fs' => 1, // fulscreen
+    'version' => 3 // version
   );
   
   public function url_isYt($url="")
@@ -27,7 +28,6 @@ class YoutubeLib
       unset($args['v']);
       
       $params = "v/".$vid;
-      
       foreach ($args as $key => $val)
       {
         ## Parse time TODO
@@ -81,6 +81,8 @@ class YoutubeLib
     
     if ($embed != false)
     {
+      $fs = ($this->config['fs'] == 1) ? "'allowfullscreen': 'true'" : "'allowfullscreen': 'false'";
+      
       return "<object 
       width=\"640\" 
       height=\"480\">
@@ -88,6 +90,7 @@ class YoutubeLib
           src=\"".$embed."\"
           type=\"application/x-shockwave-flash\"
           wmode=\"transparent\"
+          ".$fs."
           width=\"640\" 
           height=\"480\">
         </embed>
@@ -101,13 +104,21 @@ class YoutubeLib
     
     if ($embed != false)
     {
+      $fs = ($this->config['fs'] == 1) ? "'allowfullscreen': 'true'" : "'allowfullscreen': 'false'";
+      
       return "jQuery('".$append."').html('');
-            jQuery('<embed/>', {
+          jQuery('<embed/>', {
             'width': '640',
             'height': '480',
             'src': '".$embed."',
-            'type': 'application/x-shockwave-flash'
-          }).appendTo('".$append."');";
+            'type': 'application/x-shockwave-flash',
+            ".$fs."
+          }).appendTo(
+          jQuery('<object/>', {
+            'width': '640',
+            'height': '480',
+          }).appendTo('".$append."')
+          );";
     }
   }
 }
