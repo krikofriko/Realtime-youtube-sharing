@@ -5,7 +5,8 @@ class YoutubeLib
     'autoplay' => 1, // autoplay
     'rel' => 0,  // related
     'fs' => 1, // fulscreen
-    'version' => 3 // version
+    'version' => 3, // version
+    'theme' => 'dark' // new black theme
   );
   
   public function url_isYt($url="")
@@ -82,6 +83,7 @@ class YoutubeLib
     if ($embed != false)
     {
       $fs = ($this->config['fs'] == 1) ? "'allowfullscreen': 'true'" : "'allowfullscreen': 'false'";
+      $ap = ($this->config['fs'] == 1) ? "'autoplay': 'true'" : "'autoplay': 'false'";
       
       return "<object 
       width=\"640\" 
@@ -90,7 +92,8 @@ class YoutubeLib
           src=\"".$embed."\"
           type=\"application/x-shockwave-flash\"
           wmode=\"transparent\"
-          ".$fs."
+          ".$fs.",
+          ".$ap."
           width=\"640\" 
           height=\"480\">
         </embed>
@@ -105,6 +108,7 @@ class YoutubeLib
     if ($embed != false)
     {
       $fs = ($this->config['fs'] == 1) ? "'allowfullscreen': 'true'" : "'allowfullscreen': 'false'";
+      $ap = ($this->config['fs'] == 1) ? "'autoplay': 'true'" : "'autoplay': 'false'";
       
       return "jQuery('".$append."').html('');
           jQuery('<embed/>', {
@@ -112,7 +116,8 @@ class YoutubeLib
             'height': '480',
             'src': '".$embed."',
             'type': 'application/x-shockwave-flash',
-            ".$fs."
+            ".$fs.",
+            ".$ap."
           }).appendTo(
           jQuery('<object/>', {
             'width': '640',
